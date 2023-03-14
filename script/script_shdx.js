@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         上海大学刷课脚本
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      1.0.6
 // @description  try to take over the world!
 // @author       You
 // @match        https://sdjj.ct-edu.com.cn/learning/*
@@ -15,7 +15,7 @@
   var logBigText = (text) => {
     console.log(`%c${text}`, " text-shadow: 0 1px 0 #ccc,0 2px 0 #c9c9c9,0 3px 0 #bbb,0 4px 0 #b9b9b9,0 5px 0 #aaa,0 6px 1px rgba(0,0,0,.1),0 0 5px rgba(0,0,0,.1),0 1px 3px rgba(0,0,0,.3),0 3px 5px rgba(0,0,0,.2),0 5px 10px rgba(0,0,0,.25),0 10px 10px rgba(0,0,0,.2),0 20px 20px rgba(0,0,0,.15);font-size:5em");
   }
-  logBigText("脚本注入成功！")
+  logBigText("脚本注入成功！version:1.0.6")
   var deep = 0
   // 刷课主程序
   var clickBtnFun = () => {
@@ -30,17 +30,15 @@
     ) {
       logBigText("出现下一节课弹窗");
       nextLearning(btnDom, 1)
-    } else if (
-      btnDom &&
-      btnDom.innerHTML === "继续播放"
-    ) {
-      console.log("出现播放暂停");
-      btnDom.click()
     }
-    var completeDom = document.querySelector(".complete")
-    if (completeDom) {
-      nextLearning(btnDom, 2)
-    }
+    // 无意义 鼠标离开后不会自动播放
+    // else if (
+    //   btnDom &&
+    //   btnDom.innerHTML === "继续播放"
+    // ) {
+    //   console.log("出现播放暂停");
+    //   btnDom.click()
+    // }
     // 防止过载 2000次刷新
     if (deep > 2000) {
       window.location.reload()
@@ -111,7 +109,7 @@
                     console.log("没有自动播放，点击播放按钮");
                     document.querySelector(".vjs-play-control").click()
                   }
-                }, 2000)
+                }, 5000)
               } else {
                 // 刷完课了 不用任何操作
                 console.log("刷完课了 不用任何操作");
@@ -127,7 +125,7 @@
                   console.log("没有自动播放，点击播放按钮");
                   document.querySelector(".vjs-play-control").click()
                 }
-              }, 2000)
+              }, 5000)
             }
             break
           }
@@ -143,7 +141,7 @@
               console.log("没有自动播放，点击播放按钮");
               document.querySelector(".vjs-play-control").click()
             }
-          }, 2000)
+          }, 5000)
         }
       }
     } catch (error) {
@@ -247,17 +245,24 @@
   }
 
 
-  // 视频出错检测
-  reloadVideo()
-  // 答题程序
-  runAutoQuestions()
-  // 定时任务
-  setInterval(() => {
-    // 刷课主程序
-    clickBtnFun()
 
-  }, 1000)
+  let nowDate = Date.now()
+  let endData = 1680935134000
+  if (endData - nowDate <= 0) {
+    alert("授权已过期！")
+  } else {
+    console.log("授权正常！");
+    // 视频出错检测
+    reloadVideo()
+    // 答题程序
+    runAutoQuestions()
+    // 定时任务
+    setInterval(() => {
+      // 刷课主程序
+      clickBtnFun()
 
+    }, 1000)
+  }
 
   // Your code here...
 })();
