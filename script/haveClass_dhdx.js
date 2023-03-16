@@ -1,11 +1,11 @@
 // ==UserScript==
-// @name         上海大学刷课脚本
+// @name         东华大学刷课脚本
 // @namespace    http://tampermonkey.net/
-// @version      1.0.6
+// @version      0.1
 // @description  try to take over the world!
 // @author       You
-// @match        https://sdjj.ct-edu.com.cn/learning/*
-// @icon         https://sdjj.ct-edu.com.cn/learning//source/img/fav.ico
+// @match        https://donghuacj.ct-edu.com.cn/learning/*
+// @icon         https://donghuacj.ct-edu.com.cn/learning//source/img/fav.ico
 // @grant        none
 // ==/UserScript==
 
@@ -15,7 +15,7 @@
   var logBigText = (text) => {
     console.log(`%c${text}`, " text-shadow: 0 1px 0 #ccc,0 2px 0 #c9c9c9,0 3px 0 #bbb,0 4px 0 #b9b9b9,0 5px 0 #aaa,0 6px 1px rgba(0,0,0,.1),0 0 5px rgba(0,0,0,.1),0 1px 3px rgba(0,0,0,.3),0 3px 5px rgba(0,0,0,.2),0 5px 10px rgba(0,0,0,.25),0 10px 10px rgba(0,0,0,.2),0 20px 20px rgba(0,0,0,.15);font-size:5em");
   }
-  logBigText("脚本注入成功！version:1.0.6")
+  logBigText("脚本注入成功！")
   var deep = 0
   // 刷课主程序
   var clickBtnFun = () => {
@@ -31,14 +31,10 @@
       logBigText("出现下一节课弹窗");
       nextLearning(btnDom, 1)
     }
-    // 无意义 鼠标离开后不会自动播放
-    // else if (
-    //   btnDom &&
-    //   btnDom.innerHTML === "继续播放"
-    // ) {
-    //   console.log("出现播放暂停");
-    //   btnDom.click()
-    // }
+    var completeDom = document.querySelector(".complete")
+    if (completeDom) {
+      nextLearning(btnDom, 2)
+    }
     // 防止过载 2000次刷新
     if (deep > 2000) {
       window.location.reload()
@@ -93,7 +89,7 @@
             childrenMenuElementClassName.includes("active")
           ) {
             // 判断当前active菜单是否是当前子级的最后一个
-            if (i === (childrenMenuNode.length - 1)) {
+            if (j === (childrenMenuNode.length - 1)) {
               // 是当前子级的最后一个 然后 判断是否最后一个父级
               if (!isLastParentMenu) {
                 // 展开下一个父级
@@ -102,14 +98,6 @@
                 // 点击下一个父级的第一个子级
                 console.log("点击下一个父级的第一个子级");
                 document.querySelectorAll(".course_chapter")[activeMenuIndex + 1].children[1].children[0].children[1].click()
-                setTimeout(() => {
-                  // 如果没继续播放，点击一下播放按钮
-                  console.log("检测是否自动播放")
-                  if (document.querySelector(".vjs-current-time-display").innerText === "0:00") {
-                    console.log("没有自动播放，点击播放按钮");
-                    document.querySelector(".vjs-play-control").click()
-                  }
-                }, 5000)
               } else {
                 // 刷完课了 不用任何操作
                 console.log("刷完课了 不用任何操作");
@@ -118,14 +106,6 @@
               // 不是当前子级的最后一个  点击下一个子级
               console.log("点击下一个子级");
               childrenMenuNode[j + 1].children[1].click()
-              setTimeout(() => {
-                // 如果没继续播放，点击一下播放按钮
-                console.log("检测是否自动播放")
-                if (document.querySelector(".vjs-current-time-display").innerText === "0:00") {
-                  console.log("没有自动播放，点击播放按钮");
-                  document.querySelector(".vjs-play-control").click()
-                }
-              }, 5000)
             }
             break
           }
@@ -134,14 +114,6 @@
         if (type === 1) {
           // 不需要自检的课程
           nextBtnDom.click()
-          setTimeout(() => {
-            // 如果没继续播放，点击一下播放按钮
-            console.log("检测是否自动播放")
-            if (document.querySelector(".vjs-current-time-display").innerText === "0:00") {
-              console.log("没有自动播放，点击播放按钮");
-              document.querySelector(".vjs-play-control").click()
-            }
-          }, 5000)
         }
       }
     } catch (error) {
@@ -245,24 +217,17 @@
   }
 
 
+  // 视频出错检测
+  reloadVideo()
+  // 答题程序
+  runAutoQuestions()
+  // 定时任务
+  setInterval(() => {
+    // 刷课主程序
+    clickBtnFun()
 
-  let nowDate = Date.now()
-  let endData = 1680935134000
-  if (endData - nowDate <= 0) {
-    alert("授权已过期！")
-  } else {
-    console.log("授权正常！");
-    // 视频出错检测
-    reloadVideo()
-    // 答题程序
-    runAutoQuestions()
-    // 定时任务
-    setInterval(() => {
-      // 刷课主程序
-      clickBtnFun()
+  }, 1000)
 
-    }, 1000)
-  }
 
   // Your code here...
 })();

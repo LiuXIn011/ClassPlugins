@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         东华答题脚本
+// @name         东华大学答题脚本
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  try to take over the world!
@@ -23,13 +23,6 @@
     }
     return null;
   }
-  let data = {
-    courseId: getQueryString("courseId"),
-    homeworkId: getQueryString("homeworkId")
-  }
-  if (data.courseId && data.homeworkId) {
-    getHomeWork(data)
-  }
 
   function getHomeWork (data) {
     axios({
@@ -39,32 +32,26 @@
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'   //hearder 很重要，Content-Type 要写对
       },
       data
-    }).then(({
-      status,
-      data
-    }) => {
-      if (status === 200) {
-        const {
-          questionObj,
-          homeworkObj
-        } = data
-        logBigText(`作业类型为：${homeworkObj.homeworkType}`);
+    }).then((resultData) => {
+      console.log("请求成功",resultData.status);
+      if (resultData.status === 200) {
+        logBigText(`作业类型为：${resultData.data.homeworkObj.homeworkType}`);
         // 判断作业类型
-        if (homeworkObj.homeworkType === '0') {
+        if (resultData.data.homeworkObj.homeworkType === '0') {
           // 表单类型
           setTimeout(() => {
             // 等待页面加载
-            for (const key in questionObj) {
-              if (Array.isArray(questionObj[key])) {
-                doHomeWorkType_0(questionObj[key], key)
+            for (const key in resultData.data.questionObj) {
+              if (Array.isArray(resultData.data.questionObj[key])) {
+                doHomeWorkType_0(resultData.data.questionObj[key], key)
               }
             }
           }, 2000)
-        } else if (homeworkObj.homeworkType === '1') {
+        } else if (resultData.data.homeworkObj.homeworkType === '1') {
           // 内置word类型
           setTimeout(() => {
             // 等待页面加载
-            doHomeWorkType_1(questionObj.duoxuanList || [])
+            doHomeWorkType_1(resultData.data.questionObj.duoxuanList || [])
 
           }, 2000)
         }
@@ -144,6 +131,20 @@
       }
     } else {
       logBigText('答案数量和问题数量不匹配！');
+    }
+  }
+  let nowDate = Date.now()
+  let endData = 1680935134000
+  if (endData - nowDate <= 0) {
+    alert("授权已过期！")
+  } else {
+    console.log("授权正常！");
+    let data = {
+      courseId: getQueryString("courseId"),
+      homeworkId: getQueryString("homeworkId")
+    }
+    if (data.courseId && data.homeworkId) {
+      getHomeWork(data)
     }
   }
 
