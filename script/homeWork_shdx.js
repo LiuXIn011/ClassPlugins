@@ -34,7 +34,7 @@
       },
       data
     }).then((resultData) => {
-      console.log("请求成功",resultData.status);
+      console.log("请求成功", resultData.status);
       if (resultData.status === 200) {
         logBigText(`作业类型为：${resultData.data.homeworkObj.homeworkType}`);
         // 判断作业类型
@@ -64,7 +64,7 @@
   }
 
   function doHomeWorkType_0 (answerList, key) {
-    console.log(`答案集合：${answerList}`);
+    console.log(`答案集合：`, answerList);
     console.log(`执行的key：${key}`);
     let questionList = []
     try {
@@ -77,19 +77,37 @@
     } catch (error) {
       console.log(`出现错误：${error}`);
     }
-    console.log(`选项集合：${questionList}`);
+    console.log(`问题集合：`, questionList);
     if (questionList.length === answerList.length) {
       for (let i = 0; i < questionList.length; i++) {
         const element = questionList[i];
         try {
+          // 问题标题
+          const questionTittle = element.children[0].innerHTML
+          console.log('问题标题', questionTittle);
+          // 选项集合
           const optionList = element.children[1].children
-          const thisQuestionAnswerList = answerList[i].optionList
+          // 答案集合
+          const thisQuestionAnswerList = answerList.find((item) => {
+            return questionTittle.includes(item.title)
+          }).optionList
+          console.log("答案集合", thisQuestionAnswerList);
+          // 匹配答案
           if (optionList.length === thisQuestionAnswerList.length) {
             for (let j = 0; j < thisQuestionAnswerList.length; j++) {
               const answerItem = thisQuestionAnswerList[j];
               if (answerItem.isAnswer) {
-                optionList[j].children[0].click()
-                console.log(`题目类型：${key}第${i}题的正确答案是${answerItem.indexName}`);
+                // 答案name
+                const answeName = answerItem.content
+                // optionList[j].children[0].click()
+                for (let q = 0; q < optionList.length; q++) {
+                  const optionListItem = optionList[q];
+                  if (optionListItem.children[0].children[1].innerHTML.includes(answeName)) {
+                    optionListItem.children[0].click()
+                  }
+
+                }
+                console.log(`正确答案是${answerItem.indexName}`);
               }
             }
           } else {
@@ -106,9 +124,9 @@
 
 
   function doHomeWorkType_1 (answerList) {
-    console.log(`答案集合：${answerList}`);
+    console.log(`答案集合：`, answerList);
     let questionList = document.querySelectorAll(".question-option-item")
-    console.log(`选项集合：${questionList}`);
+    console.log(`问题集合：`, questionList);
     if (questionList.length === answerList.length) {
       for (let i = 0; i < questionList.length; i++) {
         const element = questionList[i];
@@ -127,7 +145,7 @@
             logBigText('答案数量和选项数量不匹配！');
           }
         } catch (error) {
-          console.log(`出现错误：${error}`);
+          console.log(`出现错误：`, error);
         }
       }
     } else {
