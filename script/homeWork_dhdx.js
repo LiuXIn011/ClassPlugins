@@ -63,7 +63,7 @@
   }
 
   function doHomeWorkType_0 (answerList, key) {
-    console.log(`答案集合：${answerList}`);
+    console.log(`答案集合：`,answerList);
     console.log(`执行的key：${key}`);
     let questionList = []
     try {
@@ -74,9 +74,9 @@
         }
       }
     } catch (error) {
-      console.log(`出现错误：${error}`);
+      console.log(`出现错误：`,error);
     }
-    console.log(`选项集合：${questionList}`);
+    console.log(`选项集合：}`,questionList);
     if (questionList.length === answerList.length) {
       for (let i = 0; i < questionList.length; i++) {
         const element = questionList[i];
@@ -95,7 +95,7 @@
             logBigText('答案数量和选项数量不匹配！');
           }
         } catch (error) {
-          console.log(`出现错误：${error}`);
+          console.log(`出现错误：`,error);
         }
       }
     } else {
@@ -105,9 +105,9 @@
 
 
   function doHomeWorkType_1 (answerList) {
-    console.log(`答案集合：${answerList}`);
+    console.log(`答案集合：`,answerList);
     let questionList = document.querySelectorAll(".question-option-item")
-    console.log(`选项集合：${questionList}`);
+    console.log(`选项集合：`,questionList);
     if (questionList.length === answerList.length) {
       for (let i = 0; i < questionList.length; i++) {
         const element = questionList[i];
@@ -126,7 +126,7 @@
             logBigText('答案数量和选项数量不匹配！');
           }
         } catch (error) {
-          console.log(`出现错误：${error}`);
+          console.log(`出现错误：`,error);
         }
       }
     } else {
